@@ -74,12 +74,20 @@ body {
 -------------------------------------------------- */
 
 .image{
-    width: 250px;
-    height: 250px;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    display:block;
+    margin:auto;
+    vertical-align:middle;
 }
 
 .card{
     margin-top: 10px;
     width: 300px;
     height: 500px;
+}
+.img-holder{
+    height: 200px;
 }
