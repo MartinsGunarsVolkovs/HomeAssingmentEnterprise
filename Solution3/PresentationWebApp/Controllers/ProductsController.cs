@@ -117,6 +117,22 @@ namespace PresentationWebApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult Disable(Guid id)
+        {
+            try
+            {
+                _productsService.DisableProduct(id);
+                TempData["feedback"] = "Product was disabled";
+            }
+            catch (Exception ex)
+            {
+                TempData["warning"] = "Product was not disabled";
+                throw;
+            }
+            return RedirectToAction("Index");
+        }
+
 
 
 

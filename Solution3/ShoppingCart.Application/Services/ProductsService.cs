@@ -49,7 +49,14 @@ namespace ShoppingCart.Application.Services
             _productsRepo.AddProduct(myProduct);
 
         }
-
+        public void DisableProduct(Guid id)
+        {
+            var pToDisable = _productsRepo.GetProduct(id);
+            if (pToDisable != null)
+            {
+                _productsRepo.DisableProduct(pToDisable.Id);
+            }
+        }
         public void DeleteProduct(Guid id)
         {
             var pToDelete = _productsRepo.GetProduct(id);
@@ -70,7 +77,8 @@ namespace ShoppingCart.Application.Services
 
             var myProduct = _productsRepo.GetProduct(id);
             var result = _mapper.Map<ProductViewModel>(myProduct);
-            return result;
+                return result;
+
 
 
          /*  ProductViewModel myModel = new ProductViewModel();
@@ -97,7 +105,11 @@ namespace ShoppingCart.Application.Services
 
             var products = _productsRepo.GetProducts().ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
 
-            return products;
+            var filteredProducts = products.Where(product => product.Disable == false);
+
+
+
+            return filteredProducts;
             //Domain >> ViewModels
 
             //to be implemented using AutoMapper
@@ -120,7 +132,7 @@ namespace ShoppingCart.Application.Services
 
             var products = _productsRepo.GetProducts().Where(x=>x.Description.Contains(keyword) || x.Name.Contains(keyword))
                 .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
-            return products;
+            return products.Where(x=>x.Disable==false);
         }
         public IQueryable<ProductViewModel> GetProducts(int category)
         {
