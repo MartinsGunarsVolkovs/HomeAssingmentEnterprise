@@ -29,6 +29,15 @@ namespace PresentationWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Configuration for cookies
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(2);//Cookie will be deleted if cookie is not used for 2 hours
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -79,6 +88,8 @@ namespace PresentationWebApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            //For cookies
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

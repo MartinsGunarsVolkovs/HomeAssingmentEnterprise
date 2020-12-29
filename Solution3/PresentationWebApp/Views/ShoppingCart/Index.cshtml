@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ShoppingCart.Application.ViewModels.ProductViewModel>
+<h1>The ShoppingCart</h1>
+
+<div class="container">
+    <div class="row">
+
+
+
+        @if (Model != null)
+        {
+            @Html.Partial("ViewProductsPartial", Model)
+        }
+        else
+        {
+            <h1>Shopping cart is empty</h1>
+        }
+
+    </div>
+</div>

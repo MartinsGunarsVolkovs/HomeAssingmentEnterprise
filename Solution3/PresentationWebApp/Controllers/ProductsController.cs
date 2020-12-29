@@ -17,7 +17,7 @@ namespace PresentationWebApp.Controllers
         private readonly ICategoriesService _categoriesService;
         private IWebHostEnvironment _env;
         public ProductsController(IProductsService productsService, ICategoriesService categoriesService,
-             IWebHostEnvironment env )
+             IWebHostEnvironment env, IShoppingCartService shoppingCartService)
         {
             _productsService = productsService;
             _categoriesService = categoriesService;
@@ -34,10 +34,11 @@ namespace PresentationWebApp.Controllers
         public IActionResult Search(string keyword) //using a form, and the select list must have name attribute = category
         {
             var list = _productsService.GetProducts(keyword).ToList();
+            
 
             return View("Index", list);
         }
-
+       
 
         public IActionResult Details(Guid id)
         {
