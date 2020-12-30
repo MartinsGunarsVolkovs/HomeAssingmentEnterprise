@@ -7,7 +7,7 @@
 
 <div class="container">
 
-    @Html.Partial("SearchPartial")
+    @await Html.PartialAsync("SearchPartial")
 
 </div>
 
@@ -18,7 +18,7 @@
 <div class="container">
     <div class="row">
 
-        @Html.Partial("ViewProductsPartial", Model)
+        @await Html.PartialAsync("ViewProductsPartial", Model)
     </div>
 </div>
 

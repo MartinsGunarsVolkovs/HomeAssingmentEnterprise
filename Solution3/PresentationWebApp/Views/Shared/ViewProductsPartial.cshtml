@@ -3,26 +3,40 @@
 
 @foreach (var p in Model)
 {
-    <div class="col-4">
-        <div class="card" style="width: 18rem;">
-            <div class="img-holder">
-                <img src="@p.ImageUrl" class="image" alt="...">
-            </div>
-            
-            <div class="card-body">
-                <h5 class="card-title">@p.Name</h5>
-                <p class="card-text">@p.Price</p>
-                <a href="/Products/Details?id=@p.Id" class="btn btn-primary">View Specification</a>
-                <a href="/ShoppingCart/AddToCart?id=@p.Id" class="btn btn-primary">Add to cart</a>
+<div class="col-4">
+    <div class="card" style="width: 18rem;">
+        <div class="img-holder">
+            <img src="@p.ImageUrl" class="image" alt="...">
+        </div>
 
-                @if (User.IsInRole("Admin"))
-                {
-            <a href="/Products/Delete?id=@p.Id" class="btn btn-danger">Delete</a>}
-                @if (User.IsInRole("Admin"))
-                {
-            <a href="/Products/Disable?id=@p.Id" class="mt-3 btn btn-secondary">Disable</a>}
+        <div class="card-body">
+            <h5 class="card-title">@p.Name</h5>
+            <p class="card-text">@p.Price €</p>
+            <a href="/Products/Details?id=@p.Id" class="btn btn-primary">View Specification</a>
+            <a href="/ShoppingCart/AddToCart?id=@p.Id" class="btn btn-primary">Add to cart</a>
+            @if (User.IsInRole("Admin"))
+            {
+<a href="/Products/Delete?id=@p.Id" class="btn btn-danger">Delete</a>}
+            @if (User.IsInRole("Admin"))
+            {
+<a href="/Products/Disable?id=@p.Id" class="mt-3 btn btn-secondary">Disable</a>}
 
-            </div>
         </div>
     </div>
-}
+</div>}
+
+<!--The script tag is used to retain the position of the page after the controller has been used-->
+<!--Reference: https://stackoverflow.com/questions/17642872/refresh-page-and-keep-scroll-position-->
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var scrollpos = sessionStorage.getItem('scrollpos');
+        if (scrollpos) {
+            window.scrollTo(0, scrollpos);
+            sessionStorage.removeItem('scrollpos');
+        }
+    });
+
+    window.addEventListener("beforeunload", function (e) {
+        sessionStorage.setItem('scrollpos', window.scrollY);
+    });
+</script>

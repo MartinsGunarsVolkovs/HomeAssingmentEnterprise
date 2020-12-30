@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<ShoppingCart.Application.ViewModels.ProductViewModel>
-<h1>The ShoppingCart</h1>
+<h2>The ShoppingCart</h2>
 
 <div class="container">
     <div class="row">
@@ -8,11 +8,11 @@
 
         @if (Model != null)
         {
-            @Html.Partial("ViewProductsPartial", Model)
+            @await Html.PartialAsync("ViewShoppingCartPartial", Model)
         }
         else
         {
-            <h1>Shopping cart is empty</h1>
+            @await Html.PartialAsync("ViewShoppingCartEmptyPartial")
         }
 
     </div>

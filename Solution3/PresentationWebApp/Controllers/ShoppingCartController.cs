@@ -44,7 +44,36 @@ namespace PresentationWebApp.Controllers
             }
 
 
-            return RedirectToAction("Index",new { area="Products"});
+            return RedirectToAction("Index","Products");
+        }
+        public IActionResult RemoveFromCart(Guid id)
+        {
+            List<Guid> listOfShoppingCartItems = SessionHelper.GetObjectFromJson<List<Guid>>(HttpContext.Session, "shoppingCart");
+            listOfShoppingCartItems.RemoveAll(x=>x==id);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingCart", listOfShoppingCartItems);
+
+            return RedirectToAction("Index");
+        }
+        public IActionResult decrementCount(Guid id)
+        {
+            List<Guid> listOfShoppingCartItems = SessionHelper.GetObjectFromJson<List<Guid>>(HttpContext.Session, "shoppingCart");
+            if (listOfShoppingCartItems.Count(x => x == id) > 1)
+            {
+                listOfShoppingCartItems.Remove(id);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingCart", listOfShoppingCartItems);
+            }
+
+            return RedirectToAction("Index");
+
+        }
+        public IActionResult incrementCount(Guid id)
+        {
+            List<Guid> listOfShoppingCartItems = SessionHelper.GetObjectFromJson<List<Guid>>(HttpContext.Session, "shoppingCart");
+                listOfShoppingCartItems.Add(id);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingCart", listOfShoppingCartItems);
+
+            return RedirectToAction("Index");
+
         }
 
     }

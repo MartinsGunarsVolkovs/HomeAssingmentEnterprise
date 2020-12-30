@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ShoppingCart.Application.ViewModels.ProductViewModel>
+
+@{
+    //Filtering the model list by removing duplicate items
+    List<ShoppingCart.Application.ViewModels.ProductViewModel> modelList = new List<ShoppingCart.Application.ViewModels.ProductViewModel>();
+    List<ShoppingCart.Application.ViewModels.ProductViewModel> filteredModelList = new List<ShoppingCart.Application.ViewModels.ProductViewModel>();
+
+    modelList = Model.ToList();
+
+    foreach (var product in modelList)
+    {
+        if (!filteredModelList.Any(x => product.Id == x.Id))
+        {
+            filteredModelList.Add(product);
+        }
+    }
+
+}
+@if (filteredModelList.Count > 0)
+{
+    <table class="table">
+        <tr>
+            <th>Product</th>
+            <th>Price (per unit)</th>
+            <th>Amount</th>
+            <th>Total</th>
+        </tr>
+
+
+
+        @foreach (var p in filteredModelList)
+        {
+            <tr class="container">
+                <td>
+                    <div class="row">
+                        <div class="img-holder col-4">
+                            <img src="@p.ImageUrl" class="image" alt="...">
+                        </div>
+                        <div class="col-8 mt-3">
+                            <p class="text-black-50">@p.Category.Name</p>
+                            <p class="text-dark">@p.Name</p>
+                        </div>
+                    </div>
+                </td>
+                <td><p>@p.Price €</p></td>
+                <td>
+                    <div class="row">
+                        <a href="/ShoppingCart/decrementCount?id=@p.Id" class="btn btn-dark">-</a>
+                        <p class="m-2">@modelList.Count(x => x.Id == p.Id)</p>
+                        <a href="/ShoppingCart/incrementCount?id=@p.Id" class="btn btn-dark">+</a>
+                    </div>
+                    <div class="row">
+                        <a href="/ShoppingCart/RemoveFromCart?id=@p.Id" class="color-black">Remove from cart</a>
+                    </div>
+
+                </td>
+                <td><p>@(modelList.Count(x => x.Id == p.Id)*p.Price) €</p></td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    @await Html.PartialAsync("ViewShoppingCartEmptyPartial")
+}
+
+
+
+
+<!--The script tag is used to retain the position of the page after the controller has been used-->
+<!--Reference: https://stackoverflow.com/questions/17642872/refresh-page-and-keep-scroll-position-->
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var scrollpos = sessionStorage.getItem('scrollpos');
+        if (scrollpos) {
+            window.scrollTo(0, scrollpos);
+            sessionStorage.removeItem('scrollpos');
+        }
+    });
+
+    window.addEventListener("beforeunload", function (e) {
+        sessionStorage.setItem('scrollpos', window.scrollY);
+    });
+</script>
+
