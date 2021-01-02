@@ -110,21 +110,6 @@ namespace ShoppingCart.Application.Services
 
 
             return filteredProducts;
-            //Domain >> ViewModels
-
-            //to be implemented using AutoMapper
-         /*   var list = from p in _productsRepo.GetProducts()
-                       select new ProductViewModel()
-                       {
-                           Id = p.Id,
-                           Description = p.Description,
-                           Name = p.Name,
-                           Price = p.Price,
-                           Category = new CategoryViewModel() { Id = p.Category.Id, Name = p.Category.Name },
-                           ImageUrl = p.ImageUrl
-                       };
-            return list;
-         */
 
         }
         public IQueryable<ProductViewModel> GetProducts(string keyword)
@@ -134,7 +119,7 @@ namespace ShoppingCart.Application.Services
                 .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider);
             return products.Where(x=>x.Disable==false);
         }
-        public IQueryable<ProductViewModel> GetProducts(int category)
+        public IQueryable<ProductViewModel> GetProductsByCategory(int category)
         {
             var list = from p in _productsRepo.GetProducts().Where(x => x.Category.Id == category)
                        select new ProductViewModel()

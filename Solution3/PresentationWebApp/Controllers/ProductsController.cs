@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PresentationWebApp.Helpers;
 using ShoppingCart.Application.Interfaces;
 using ShoppingCart.Application.ViewModels;
 
@@ -23,36 +24,56 @@ namespace PresentationWebApp.Controllers
             _categoriesService = categoriesService;
             _env = env;
         }
-
-        public IActionResult Index()
+        
+        public IActionResult Index(int? page)
         {
-            ViewBag.Categories = _categoriesService.GetCategories();
-
+            SetViewBag(page);
             var list = _productsService.GetProducts();
             return View(list);
         }
 
-        [HttpPost]
-        public IActionResult Search(string keyword) //using a form, and the select list must have name attribute = category
+        public IActionResult Search(string keyword, int?page)
         {
-            ViewBag.Categories = _categoriesService.GetCategories();
+            SetViewBag(page);
+            //Saves the last search results in a cookie so this method could be used again without submitting the form again
+            if (keyword==null)
+            {
+                keyword = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, "lastSearchedItem");
+            }
+            else
+            {
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "lastSearchedItem", keyword);
+            }
+
+            
+
             var list = _productsService.GetProducts(keyword).ToList();
 
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "lastSearchedType", "keyword");
+
             return View("Index", list);
         }
-        [HttpPost]
-        public IActionResult SearchByCategory(int category) //using a form, and the select list must have name attribute = category
+        public IActionResult SearchByCategory(int category, int?page)
         {
-            var list = _productsService.GetProducts(category).ToList();
+            //Saves the last search results in a cookie so this method could be used again without submitting the form again
+            if (category == 0)
+            {
+                category = SessionHelper.GetObjectFromJson<int>(HttpContext.Session, "lastSearchedCategory");
+            }
+            else 
+            {
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "lastSearchedCategory", category);
+            }
 
-            var listOfCategeories = _categoriesService.GetCategories();
+            var list = _productsService.GetProductsByCategory(category).ToList();
 
-            ViewBag.Categories = listOfCategeories;
+            SetViewBag(page);
 
+            //Stores the type of the last search for the AddCart function in the ShoppingCartController to redirect with a correct list
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "lastSearchedType", "category");
 
             return View("Index", list);
         }
-
 
         public IActionResult Details(Guid id)
         {
@@ -146,6 +167,18 @@ namespace PresentationWebApp.Controllers
                 throw;
             }
             return RedirectToAction("Index");
+        }
+        public void SetViewBag(int? page)
+        {
+            ViewBag.Categories = _categoriesService.GetCategories();
+            if (page == null)
+            {
+                ViewBag.Page = 1;
+            }
+            else
+            {
+                ViewBag.Page = page;
+            }
         }
 
 

@@ -24,7 +24,7 @@ namespace PresentationWebApp.Controllers
             var list = _shoppingCartService.GetShoppingCartProducts(shoppingCartItems);
             return View(list);
         }
-        public IActionResult AddToCart(Guid id)
+        public IActionResult AddToCart(Guid id, int? page)
         {
 
             if (SessionHelper.GetObjectFromJson<List<Guid>>(HttpContext.Session, "shoppingCart") == null)
@@ -43,8 +43,22 @@ namespace PresentationWebApp.Controllers
 
             }
 
+            string lastSearchType = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, "lastSearchedType");
+            if (lastSearchType == "category")
+            {
+                return RedirectToAction("SearchByCategory", "Products",new {page=page});
+            }
+            else if(lastSearchType == "keyword")
+            {
+                return RedirectToAction("Search", "Products", new { page = page });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Products", new { page = page });
+            }
+            
 
-            return RedirectToAction("Index","Products");
+            
         }
         public IActionResult RemoveFromCart(Guid id)
         {
