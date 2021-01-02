@@ -38,7 +38,7 @@
                         </div>
                         <div class="col-8 mt-3">
                             <p class="text-black-50">@p.Category.Name</p>
-                            <p class="text-dark">@p.Name</p>
+                            <a class="text-dark" href="/Products/Details?id=@p.Id">@p.Name</a>
                         </div>
                     </div>
                 </td>
@@ -58,6 +58,28 @@
             </tr>
         }
     </table>
+    
+    <div class="container">
+        @if (User.IsInRole("Admin") || User.IsInRole("User"))
+        {
+        <div class="d-flex flex-row-reverse">
+            <a href="" class="btn btn-warning">Check out</a>
+        </div>
+        }
+        else
+        {
+            <div class="d-flex justify-content-center">
+                <p class="text-black-50">You must be logged in to check out</p>
+            </div>
+        
+        }
+
+    </div>
+        
+        
+    
+    
+
 }
 else
 {

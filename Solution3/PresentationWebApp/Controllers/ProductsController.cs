@@ -18,7 +18,7 @@ namespace PresentationWebApp.Controllers
         private IWebHostEnvironment _env;
         public ProductsController(IProductsService productsService, ICategoriesService categoriesService,
              IWebHostEnvironment env, IShoppingCartService shoppingCartService)
-        {
+        { 
             _productsService = productsService;
             _categoriesService = categoriesService;
             _env = env;
@@ -26,6 +26,8 @@ namespace PresentationWebApp.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Categories = _categoriesService.GetCategories();
+
             var list = _productsService.GetProducts();
             return View(list);
         }
@@ -33,12 +35,24 @@ namespace PresentationWebApp.Controllers
         [HttpPost]
         public IActionResult Search(string keyword) //using a form, and the select list must have name attribute = category
         {
+            ViewBag.Categories = _categoriesService.GetCategories();
             var list = _productsService.GetProducts(keyword).ToList();
-            
 
             return View("Index", list);
         }
-       
+        [HttpPost]
+        public IActionResult SearchByCategory(int category) //using a form, and the select list must have name attribute = category
+        {
+            var list = _productsService.GetProducts(category).ToList();
+
+            var listOfCategeories = _categoriesService.GetCategories();
+
+            ViewBag.Categories = listOfCategeories;
+
+
+            return View("Index", list);
+        }
+
 
         public IActionResult Details(Guid id)
         {
@@ -88,7 +102,7 @@ namespace PresentationWebApp.Controllers
 
                 TempData["feedback"] = "Product was added successfully";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //log error
                 TempData["warning"] = "Product was not added!";
@@ -108,7 +122,7 @@ namespace PresentationWebApp.Controllers
                 _productsService.DeleteProduct(id);
                 TempData["feedback"] = "Product was deleted";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //log your error 
 
@@ -126,7 +140,7 @@ namespace PresentationWebApp.Controllers
                 _productsService.DisableProduct(id);
                 TempData["feedback"] = "Product was disabled";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["warning"] = "Product was not disabled";
                 throw;

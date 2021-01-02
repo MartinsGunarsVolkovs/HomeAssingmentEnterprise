@@ -3,12 +3,13 @@
 
 @{ ViewData["Title"] = "Index"; }
 
-<h1>Products Catalogue</h1>
+<h1 style="text-align:center">Products Catalogue</h1>
 
 <div class="container">
-
-    @await Html.PartialAsync("SearchPartial")
-
+    <h3 style="text-align:center" class="text-black-50">Categories</h3>
+    <div class="d-flex justify-content-center">
+        @await Html.PartialAsync("SearchCategoryPartial")
+    </div>
 </div>
 
 
@@ -16,11 +17,10 @@
 
 
 <div class="container">
-    <div class="row">
+    <div class="row mt-3">
 
         @await Html.PartialAsync("ViewProductsPartial", Model)
     </div>
 </div>
-
 
 
