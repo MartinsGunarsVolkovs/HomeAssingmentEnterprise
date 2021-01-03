@@ -44,6 +44,7 @@ namespace PresentationWebApp.Controllers
             }
 
             string lastSearchType = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, "lastSearchedType");
+            TempData["feedback"] = "Product was added to the shopping cart";
             if (lastSearchType == "category")
             {
                 return RedirectToAction("SearchByCategory", "Products",new {page=page});

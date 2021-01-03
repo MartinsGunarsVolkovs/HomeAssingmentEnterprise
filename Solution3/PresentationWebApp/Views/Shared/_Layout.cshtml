@@ -67,20 +67,7 @@
 
     <div class="container">
         <main role="main" class="pb-3">
-
-            @if (TempData["feedback"] != null)
-            {
-<div class="alert alert-primary" role="alert">
-    @TempData["feedback"]
-</div>            }
-
-            @if (TempData["warning"] != null)
-            {
-<div class="alert alert-warning" role="alert">
-    @TempData["warning"]
-</div>            }
-
-
+           @await Html.PartialAsync("UserFeedbackPartial") 
             @RenderBody()
         </main>
     </div>

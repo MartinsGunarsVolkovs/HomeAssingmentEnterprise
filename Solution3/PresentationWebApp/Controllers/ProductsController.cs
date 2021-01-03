@@ -106,22 +106,35 @@ namespace PresentationWebApp.Controllers
                 {
                     if(f.Length > 0)
                     {
-                        //C:\Users\Ryan\source\repos\SWD62BEP\SWD62BEP\Solution3\PresentationWebApp\wwwroot
-                        string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(f.FileName);
-                        string newFilenameWithAbsolutePath = _env.WebRootPath +  @"\Images\" + newFilename;
                         
-                        using (var stream = System.IO.File.Create(newFilenameWithAbsolutePath))
-                        {
-                            f.CopyTo(stream);
-                        }
+                            //C:\Users\Ryan\source\repos\SWD62BEP\SWD62BEP\Solution3\PresentationWebApp\wwwroot
+                            string newFilename = Guid.NewGuid() + System.IO.Path.GetExtension(f.FileName);
+                            string newFilenameWithAbsolutePath = _env.WebRootPath + @"\Images\" + newFilename;
 
-                        data.ImageUrl = @"\Images\" + newFilename;
+                            using (var stream = System.IO.File.Create(newFilenameWithAbsolutePath))
+                            {
+                                f.CopyTo(stream);
+                            }
+
+                            data.ImageUrl = @"\Images\" + newFilename;
+
+                        _productsService.AddProduct(data);
+                        TempData["feedback"] = "Product was added successfully";
                     }
                 }
+                else if (data.ImageUrl != null)
+                {
+                    _productsService.AddProduct(data);
+                    TempData["feedback"] = "Product was added successfully";
+                }
+                else
+                {
+                    TempData["warning"] = "Product was not added, please add an image!";
+                }
 
-                _productsService.AddProduct(data);
+                
 
-                TempData["feedback"] = "Product was added successfully";
+                
             }
             catch (Exception)
             {
@@ -154,7 +167,7 @@ namespace PresentationWebApp.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult Disable(Guid id)
+        public IActionResult Disable(Guid id,int?page)
         {
             try
             {
@@ -166,7 +179,21 @@ namespace PresentationWebApp.Controllers
                 TempData["warning"] = "Product was not disabled";
                 throw;
             }
-            return RedirectToAction("Index");
+
+            //Returns to the last searched view
+            string lastSearchType = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, "lastSearchedType");
+            if (lastSearchType == "category")
+            {
+                return RedirectToAction("SearchByCategory", new { page = page });
+            }
+            else if (lastSearchType == "keyword")
+            {
+                return RedirectToAction("Search", new { page = page });
+            }
+            else
+            {
+                return RedirectToAction("Index", new { page = page });
+            }
         }
         public void SetViewBag(int? page)
         {
