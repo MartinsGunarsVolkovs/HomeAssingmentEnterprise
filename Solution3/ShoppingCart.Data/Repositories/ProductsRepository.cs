@@ -54,5 +54,10 @@ namespace ShoppingCart.Data.Repositories
             //ShoppingCartDbContext context = new ShoppingCartDbContext();
             return _context.Products;
         }
+
+        public int GetStock(Guid id)
+        {
+            return _context.Products.SingleOrDefault(x => x.Id == id).Stock;
+        }
     }
 }

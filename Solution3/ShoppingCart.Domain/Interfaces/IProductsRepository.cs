@@ -18,6 +18,8 @@ namespace ShoppingCart.Domain.Interfaces
 
         void DisableProduct(Guid p);
 
+        int GetStock(Guid id);
+
 
     }
 }

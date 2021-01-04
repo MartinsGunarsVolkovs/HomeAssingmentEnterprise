@@ -134,7 +134,9 @@ namespace ShoppingCart.Application.Services
             return list;
         }
 
-
-
+        public int GetStock(Guid id)
+        {
+            return _productsRepo.GetStock(id);
+        }
     }
 }
