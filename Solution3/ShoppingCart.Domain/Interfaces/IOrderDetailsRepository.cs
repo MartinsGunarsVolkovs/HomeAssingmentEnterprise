@@ -8,5 +8,6 @@ namespace ShoppingCart.Domain.Interfaces
     public interface IOrderDetailsRepository
     {
         int AddOrderDetails(OrderDetails od);
+        void AddOrderDetailsList(List<OrderDetails> od);
     }
 }

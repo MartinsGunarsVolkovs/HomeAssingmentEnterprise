@@ -129,7 +129,14 @@ namespace PresentationWebApp.Controllers
             if (listOfItems != null)
             {
                 string email = User.Identity.Name;
-                _shoppingCartService.AddOrder(listOfItems, email);
+                if(_shoppingCartService.AddOrder(listOfItems, email))
+                {
+                    TempData["success"] = "Checkout succeeded!";
+                }
+                else
+                {
+                    TempData["warning"] = "Checkout failed, because there are not enough items in stock!";
+                }
             }
 
             return RedirectToAction("Index");

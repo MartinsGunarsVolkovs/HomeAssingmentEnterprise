@@ -8,5 +8,6 @@ namespace ShoppingCart.Domain.Interfaces
     public interface IOrdersRepository
     {
         Guid AddOrder(Order o);
+        bool RemoveOrder(Order o);
     }
 }

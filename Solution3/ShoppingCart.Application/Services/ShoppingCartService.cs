@@ -27,16 +27,28 @@ namespace ShoppingCart.Application.Services
             _orderDetailsRepository = orderDetailsRepository;
             
         }
-
-        public void AddOrder(List<Guid> shoppingCartItems,string email)
+        public bool CheckStock(List<OrderDetails> listToAdd)
         {
+            
+            foreach(var detail in listToAdd)
+            {
+                if (_productsRepository.GetStock(detail.ProductFK) < detail.Quantity)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public bool AddOrder(List<Guid> shoppingCartItems,string email)
+        {
+            //makes a new Order
             Order order = new Order();
             order.UserEmail = email;
             order.DatePlaced = DateTime.Now;
 
            Guid orderId= _ordersRepository.AddOrder(order);
 
-            //Makes a list with unique Guids
+            //Makes a list with unique Guids from shoppinCartItems list
             List<Guid> filteredShoppingCartItems = new List<Guid>();
             foreach (var item in shoppingCartItems)
             {
@@ -45,7 +57,8 @@ namespace ShoppingCart.Application.Services
                     filteredShoppingCartItems.Add(item);
                 }
             }
-
+            List<OrderDetails> listOfOrderDetails = new List<OrderDetails>();
+            //Fills the OrderDetailsList with OrderDetails
             foreach(var item in filteredShoppingCartItems)
             {
                 int quantity = shoppingCartItems.Count(x => x == item);
@@ -59,10 +72,23 @@ namespace ShoppingCart.Application.Services
                 orderDetails.OrderFK = OrderFk;
                 orderDetails.Price = price;
 
-                _orderDetailsRepository.AddOrderDetails(orderDetails);
+                listOfOrderDetails.Add(orderDetails);
                
             }
-
+            //Checks for stock before adding OrderDetails
+            if (CheckStock(listOfOrderDetails))
+            {
+                _orderDetailsRepository.AddOrderDetailsList(listOfOrderDetails);
+                return true;
+                
+            }
+            else
+            {
+                //Removes the previously created Order that doesnt have OrderDetails, because of the failed stock check
+                _ordersRepository.RemoveOrder(order);
+                return false;
+            }
+            
 
         }
 

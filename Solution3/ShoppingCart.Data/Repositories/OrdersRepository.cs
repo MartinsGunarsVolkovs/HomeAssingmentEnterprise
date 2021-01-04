@@ -20,5 +20,12 @@ namespace ShoppingCart.Data.Repositories
             _context.SaveChanges();
             return o.Id;
         }
+
+        public bool RemoveOrder(Order o)
+        {
+            _context.Orders.Remove(o);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
