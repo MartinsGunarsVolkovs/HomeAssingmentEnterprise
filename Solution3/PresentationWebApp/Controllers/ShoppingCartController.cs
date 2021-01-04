@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PresentationWebApp.Helpers;
 using ShoppingCart.Application.Interfaces;
 using ShoppingCart.Domain.Interfaces;
@@ -13,7 +15,7 @@ namespace PresentationWebApp.Controllers
     {
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IProductsService _productsService;
-        
+
         public ShoppingCartController(IShoppingCartService shoppingCartService, IProductsService productsService)
         {
             _shoppingCartService = shoppingCartService;
@@ -119,6 +121,18 @@ namespace PresentationWebApp.Controllers
 
             return RedirectToAction("Index");
 
+        }
+        [Authorize(Roles = "Admin,User")]
+        public IActionResult Checkout()
+        {
+            var listOfItems = SessionHelper.GetObjectFromJson<List<Guid>>(HttpContext.Session, "shoppingCart");
+            if (listOfItems != null)
+            {
+                string email = User.Identity.Name;
+                _shoppingCartService.AddOrder(listOfItems, email);
+            }
+
+            return RedirectToAction("Index");
         }
 
     }
