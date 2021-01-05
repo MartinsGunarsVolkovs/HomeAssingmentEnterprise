@@ -75,10 +75,15 @@ namespace PresentationWebApp.Controllers
             return View("Index", list);
         }
 
-        public IActionResult Details(Guid id)
+        public IActionResult Details(Guid id,int amount)
         {
+            if (amount < 1)//Since int cant be null then by default its 0, if amount is not given then by default it will be 1
+            {
+                amount = 1;
+            }
+            ViewBag.Amount = amount;
             var p = _productsService.GetProduct(id);
-            return View( p);
+            return View(p);
         }
 
         //the engine will load a page with empty fields

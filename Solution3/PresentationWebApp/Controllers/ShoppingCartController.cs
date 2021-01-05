@@ -55,9 +55,12 @@ namespace PresentationWebApp.Controllers
                 TempData["warning"] = "Cant add disabled products";
             }
         }
-        public IActionResult AddToCartDetails(Guid id)
+        public IActionResult AddToCartDetails(Guid id,int amount)
         {
-            AddToCookie(id);
+            for(int i = 0; i < amount; i++)
+            {
+                AddToCookie(id);
+            }
             return RedirectToAction("Details","Products", new {id=id });
         }
         public IActionResult AddToCart(Guid id, int? page)
@@ -131,7 +134,7 @@ namespace PresentationWebApp.Controllers
                 string email = User.Identity.Name;
                 if(_shoppingCartService.AddOrder(listOfItems, email))
                 {
-                    TempData["success"] = "Checkout succeeded!";
+                    TempData["feedback"] = "Checkout succeeded!";
                 }
                 else
                 {
