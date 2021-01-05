@@ -121,7 +121,7 @@ namespace ShoppingCart.Application.Services
         }
         public IQueryable<ProductViewModel> GetProductsByCategory(int category)
         {
-            var list = from p in _productsRepo.GetProducts().Where(x => x.Category.Id == category)
+            var list = from p in _productsRepo.GetProducts().Where(x => x.Category.Id == category&&x.Disable==false)
                        select new ProductViewModel()
                        {
                            Id = p.Id,
@@ -129,7 +129,7 @@ namespace ShoppingCart.Application.Services
                            Name = p.Name,
                            Price = p.Price,
                            Category = new CategoryViewModel() { Id = p.Category.Id, Name = p.Category.Name },
-                           ImageUrl = p.ImageUrl
+                           ImageUrl = p.ImageUrl   
                        };
             return list;
         }
